@@ -1,0 +1,12 @@
+#APP包名
+if [[ -z "${1:-}" ]]; then
+	return 1
+fi
+for var in $(echo ${1:-}); do
+	result="$(dumpsys package ${var} | grep -s "ACCESSIBILITY_SERVICE" | sed 's/ /\n/g' | grep "${var}/" | sort | uniq)"
+	if [[ -n "${result}" ]];then
+		result="$(echo "${result}" | sed "s:/\.:/${var}\.:g")"
+		tmp="${tmp:-}${result}\n"
+	fi
+done
+echo -e "${tmp}" | sort | uniq | sed '/^$/d'

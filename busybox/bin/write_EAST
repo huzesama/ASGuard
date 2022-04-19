@@ -1,0 +1,11 @@
+#追加EAS(空格或换行间隔，不写为清空)
+if [[ -z "${1:-}" ]]; then
+	return
+elif [[ "${1:-}" = "-c" ]]; then
+	settings put secure enabled_accessibility_services ""
+	return
+fi
+local result
+result="$(read_EAST "${1:-}")"
+result="$(echo ${result} | sed 's/ /:/g')"
+settings put secure enabled_accessibility_services "${result}"

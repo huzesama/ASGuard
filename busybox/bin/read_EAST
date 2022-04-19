@@ -1,0 +1,8 @@
+#读EAST(参数由write_EAST提供)
+var="$(settings get secure enabled_accessibility_services | sed 's/:/ /g') ${1:-}"
+for var in $(echo ${var}); do
+	partA="${var%/*}"
+	var="$(echo "${var}" | sed "s:/\.:/${partA}\.:g")"
+	result="${result:-}${var}\n"
+done
+echo -e "${result}" | sort | uniq | sed '/^$/d'

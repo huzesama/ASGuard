@@ -1,0 +1,5 @@
+if [[ -z $(dumpsys window policy | grep mInputRestricted | grep true) ]]; then
+	echo true
+else
+	echo false
+fi

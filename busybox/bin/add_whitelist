@@ -1,0 +1,4 @@
+#APP包名(空格或换行隔开)
+for var in $(echo ${1:-}); do
+	dumpsys deviceidle whitelist +${var}
+done

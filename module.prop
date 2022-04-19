@@ -1,0 +1,6 @@
+id=huzeASGuard
+name=H-无障碍服务守护[ASGuard]
+version=v6_beta
+versionCode=202204171
+author=沍澤
+description=开机自动开启且实时保护无障碍服务,防止应用意外关闭导致无障碍服务连同关闭.

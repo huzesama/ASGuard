@@ -1,0 +1,25 @@
+#APP包名(单个) 选项()
+#输出(5)启动时间点(7:CPU使用时间)
+if [[ -z ${1:-} ]]; then
+	echo null
+	return 1
+fi
+local package
+package=$1
+local option
+option=${2:-n}
+local data
+data=$(ps -ef | grep "${package}" | grep -v grep)
+for var in $(seq 1 $(echo "${data}" | wc -l)); do
+	var=$(echo "${data}" | sed -n ${var}p | sed 's/ /\n/g' | sed '/^$/d')
+	if [[ $(echo "${var}" | wc -l ) = 8 ]];then
+		if [[ "$(echo "${var}" | sed -n 8p)" = "${package}" ]] || [[ $(echo "${var}" | grep "${package}:") ]]; then
+			case ${option} in
+			t) 	echo "${var}" | sed -n 5p ;;
+			*) echo "true" ;;
+			esac
+			return
+		fi
+	fi
+done
+echo "false"

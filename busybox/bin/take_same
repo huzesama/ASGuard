@@ -1,0 +1,3 @@
+max=$(echo "${1:-}" | sort | uniq)
+min=$(echo "${2:-}" | sort | uniq)
+echo -e "${max}${min:+\n}${min}" | sort | uniq -d

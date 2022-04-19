@@ -1,0 +1,9 @@
+#日志描述 标准描述(可选)
+cat <<PROP > "${PROP}"
+id=huzeASGuard
+name=H-无障碍服务守护[ASGuard]
+version=${version}
+versionCode=${versionCode}
+author=沍澤
+description=${2:-一个无障碍功能管理模块.在获取root权限的APP完全替代一般获取无障碍权限的APP前的不错选择.}${1:+[}${1:-}${1:+]}
+PROP
