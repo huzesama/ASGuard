@@ -6,7 +6,7 @@ done
 export DIR="${0%/*}"
 export PATH="${DIR}/busybox/bin:${PATH}"
 export version='v6_beta'
-export versionCode='202204171'
+export versionCode='202204201'
 export inform="ASGuard ${version}(${versionCode}) created by 沍澤"
 export CONFIG="/data/media/0/Android/ASGuard.conf"
 export LOG_PATH="/data/media/0/Android/log_ASG.txt"

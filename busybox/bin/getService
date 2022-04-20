@@ -9,4 +9,10 @@ for var in $(echo ${1:-}); do
 		tmp="${tmp:-}${result}\n"
 	fi
 done
-echo -e "${tmp}" | sort | uniq | sed '/^$/d'
+local filter
+filter="com.android.settings"
+tmp=$(echo -e "${tmp}")
+for var in $(echo ${filter});do
+	tmp=$(echo "${tmp}" | grep -v ${var})
+done
+echo "${tmp}" | sort | uniq | sed '/^$/d'

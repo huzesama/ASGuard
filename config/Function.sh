@@ -1,4 +1,4 @@
-releaseConfig() {
+ releaseConfig() {
 cat <<EOF > "${CONFIG}"
 #面板日期：2022.04.14#作者：酷安@沍澤#QQ用户群：837934310#
 #======================提示========================
@@ -79,6 +79,7 @@ get_EAS() {
 mylog() {
 	if [[ ${log:1} != 0 ]]; then
 		[[ -z ${1:-} ]] || echo -e "[$(date "+%m-%d %X")]${2:+ [}${2:-}${2:+]}: "${1:-Empty Log} >> /data/media/0/Android/log_ASG.txt
+		[[ $(cat /data/media/0/Android/log_ASG.txt | wc -l) -gt 200 ]] && sed -i '1d' /data/media/0/Android/log_ASG.txt
 	fi
 }
 

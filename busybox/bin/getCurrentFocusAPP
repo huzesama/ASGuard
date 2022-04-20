@@ -1,16 +1,18 @@
-#获取焦点窗口AppPackageName
-for CurrentAPP in $(seq 1 20); do
-	CurrentAPP="$(dumpsys window | grep mCurrentFocus)"
-	if [[ -z $(echo "${CurrentAPP}" | grep "null") ]]; then
-		CurrentAPP="${CurrentAPP##* }"
-		if [[ -n $(echo "${CurrentAPP}" | grep '/') ]]; then
-			CurrentAPP="${CurrentAPP%/*}"
-		else
-			CurrentAPP="${CurrentAPP:0:$(( ${#CurrentAPP} - 1 ))}"
-		fi
+#获取当前窗口AppPackageName
+CurrentAPP="$(dumpsys window | grep mFocusedWindow)"
+if [[ -n "${CurrentAPP}" ]]; then
+	CurrentAPP="${CurrentAPP##* }"
+	if [[ -n $(echo "${CurrentAPP}" | fgrep '/') ]]; then
+		CurrentAPP="${CurrentAPP%/*}"
+	else
+		CurrentAPP="${CurrentAPP:0:$(( ${#CurrentAPP} - 1 ))}"
+	fi
+	if [[ -n $(echo "${CurrentAPP}" | fgrep '.') ]] && [[ -z $(echo "${CurrentAPP}" | fgrep '_') ]]; then
 		echo "${CurrentAPP}"
 		return
 	fi
-	sleep 1
-done
-return 1
+fi
+CurrentAPP="$(dumpsys window | grep mFocusedApp | tail -n -1)"
+CurrentAPP="${CurrentAPP%/*}"
+CurrentAPP="${CurrentAPP##* }"
+echo "${CurrentAPP}"

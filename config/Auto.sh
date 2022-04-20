@@ -46,8 +46,8 @@ while true; do
 			CFA="$(getCurrentFocusAPP)"
 			##排除指定APP##
 			[[ -n $(echo "${exAS}" | grep -w "${CFA}") ]] && CFA=""
-			##获取不到焦点窗口或为主页面时执行##
-			if [[ -z ${CFA} ]] || [[ $(echo ${CFA} | grep home) ]]; then
+			##焦点窗口为主页面时弱预测及监测##
+			if [[ -n $(echo ${CFA} | grep home) ]]; then
 				if [[ "${EAST}" != "${old_EAST}" ]]; then
 					sameEAST=$(take_same "${EAST}" "${old_EAST}")
 					decreaseEAST=$(get_difference "${old_EAST}" "${sameEAST}")
@@ -57,7 +57,7 @@ while true; do
 					if [[ $(eval "echo ${var}_Td") != ${Td} ]] || [[ -n $(echo "${decreaseEAST}" | grep "${var//_/.}/") ]]; then
 						if [[ ${Td} != false ]]; then
 							write_EAST "$(getService "${var//_/.}")"
-							mylog "开启无障碍开关." "${var//_/.}"
+							mylog "重新打开无障碍服务." "${var//_/.}"
 						fi
 						eval "${var}_Td=${Td}"
 					##最近五分钟启动频率是否大于最近十分钟的前五分钟启动频率##
@@ -84,7 +84,10 @@ while true; do
 			willWrite="$(exEAS "${willWrite}")"
 			if [[ -n ${willWrite} ]]; then
 				write_EAST "${willWrite}"
-				mylog "应用获得焦点." "${CFA}"
+				if [[ ${old_CFA} != "${CFA}" ]]; then
+					mylog "应用获得焦点." "${CFA}"
+					old_CFA="${CFA}"
+				fi
 				AL="${AL:-}${AL:+\n}${CFA}"
 				##替换包名如com.huze.ASGuard替换为com_huze_ASGuard##
 				AL=$(echo "${AL//./_}" | sort | uniq)
