@@ -23,7 +23,9 @@ Magisk模块，用于安卓的无障碍服务(或名:辅助功能)辅助管理�
 
 过滤APP需要填入package name包名
 
-过滤开关可通过dumpsys package [PackageName]| grep -s "ACCESSIBILITY_SERVICE" | sed 's/ /\n/g' | fgrep "[PackageName]/." | sed "s:/\.:/[PackageName]\.:g" | sort | uniq
+过滤开关可通过以下命令获取:
+
+dumpsys package [PackageName]| grep -s "ACCESSIBILITY_SERVICE" | sed 's/ /\n/g' | fgrep "[PackageName]/." | sed "s:/\.:/[PackageName]\.:g" | sort | uniq
 
 以上三处[PackageName]需要替换成查找的package name
 
