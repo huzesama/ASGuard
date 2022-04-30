@@ -1,0 +1,9 @@
+#APP包名(空格或换行隔开)
+sleep 90
+if [[ ${WhitelistCleaner:-0} = 1 ]]; then
+	mylog "开始清理电池优化白名单." "Whitelist"
+	for line in $(echo $(pm list packages --user 0 | sed 's/package://g')); do
+		dumpsys deviceidle whitelist -${line} >/dev/null 2>&1
+	done
+fi
+add_whitelist "${1:-}"

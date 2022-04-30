@@ -28,6 +28,9 @@ log=${log:-1}
 #是否开机时关闭所有无障碍服务(开启/关闭: 1/0)
 clean=${clean:-1}
 
+#是否清空电池优化白名单(开启/关闭: 1/0)
+WhitelistCleaner=${WhitelistCleaner:-0}
+
 #运行模式(A/M/F/R)
 #A(Auto): 自动管理开启相应无障碍功能无须配置AS即可使用
 #M(Monitor): 监控无障碍服务的启用应用，将被关闭的无障碍服务重新开启

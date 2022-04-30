@@ -6,13 +6,13 @@ done
 export DIR="${0%/*}"
 export PATH="${DIR}/busybox/bin:${PATH}"
 export version='v6_beta'
-export versionCode='202204201'
+export versionCode='202204301'
 export inform="ASGuard ${version}(${versionCode}) created by 沍澤"
 export CONFIG="/data/media/0/Android/ASGuard.conf"
 export LOG_PATH="/data/media/0/Android/log_ASG.txt"
 export PROP="${DIR}/module.prop"
 export description="一个无障碍功能管理模块.在\"获取root权限\"的APP完全替代\"一般使用无障碍权限\"的APP前的Msgiask模块的不错选择."
-export AS exAS EAS EAST package_whitelist CTime log clean mode exclude MODPATH LastConf
+export AS exAS EAS EAST package_whitelist CTime log clean mode exclude MODPATH LastConf WhitelistCleaner
 for var in $(ls "${DIR}/busybox/bin"); do
 	chmod 111 "${DIR}/busybox/bin/${var}"
 	chown 'root:root' "${DIR}/busybox/bin/${var}"
@@ -33,7 +33,7 @@ else
 fi
 
 ##电池优化白名单操作##
-start_whitelist_clear "${AS} ${package_whitelist}" &
+startWhitelistClean "${AS} ${package_whitelist}" &
 mylog "${AS} ${package_whitelist}" "Whitelist"
 
 ##匹配AS的无障碍开关##

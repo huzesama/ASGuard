@@ -47,6 +47,9 @@ cat <<EOF
 - 取消开机清空电池优化白名单(4.19)
 - 修复多用户导致获取焦点APP失败的问题(4.20)
 - 优化获取窗口APP函数(4.20)
+- 改进Auto模式(4.30)
+- 提升AS列表内APP优先级(4.30)
+- 重新采用开机清空电池优化白名单,但默认设置为不清空(4.30)
 - 
 - 提示：在Magisk列表关闭模块开关可暂时停止保护服务，关机前请记得打开~
 - 
@@ -71,6 +74,7 @@ if [[ ! -f "/data/media/0/Android/ASGuard.conf" ]]; then
 	LogPrint "-- 默认周期10秒(运行模式为M/R时有效)"
 	LogPrint "-- 默认开启log日志"
 	LogPrint "-- 默认开机关闭所有无障碍服务"
+	LogPrint "-- 默认开机不清空电池优化白名单"
 	LogPrint "-- 默认运行模式:A(A/M/F/R)"
 	LogPrint "-- 模块安装目录${MODPATH//_update/}"
 	WriteConfig
