@@ -5,8 +5,8 @@ done
 ##设置环境变量##
 export DIR="${0%/*}"
 export PATH="${DIR}/busybox/bin:${PATH}"
-export version='v6_beta'
-export versionCode='202204301'
+export version='v6'
+export versionCode='202205041'
 export inform="ASGuard ${version}(${versionCode}) created by 沍澤"
 export CONFIG="/data/media/0/Android/ASGuard.conf"
 export LOG_PATH="/data/media/0/Android/log_ASG.txt"

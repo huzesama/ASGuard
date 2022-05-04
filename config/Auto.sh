@@ -58,6 +58,7 @@ while true; do
 				for var in $(echo ${AS}); do
 					if [[ $(getProcessState ${var}) != "false" ]]; then
 						write_EAST "$(getService "${var}")"
+						mylog "为进程开启无障碍服务." "${var}"
 					fi
 				done
 				for var in $(echo ${AL}); do
@@ -81,6 +82,7 @@ while true; do
 							AL=$(echo "${AL}" | fgrep -vw "${var}")
 							eval "unset ${var}_Fre10"
 							eval "unset ${var}_Fre5"
+							mylog "从AL名单中移除." "${CFA}"
 						else
 							eval "${var}_Fre10=${var}_Fre5"
 						fi
@@ -105,7 +107,8 @@ while true; do
 					mylog "应用获得焦点." "${CFA}"
 					old_CFA="${CFA}"
 				fi
-				if [[ -z $(echo "${AS}" | fgrep "${CFA}") ]]; then
+				if [[ -z $(echo "${AS}" | fgrep "${CFA}") ]] && [[ -z $(echo "${AL}" | fgrep "${CFA//./_}") ]]; then
+					mylog "已加入AL名单." "${CFA}"
 					AL="${AL:-}${AL:+\n}${CFA}"
 					##替换包名如com.huze.ASGuard替换为com_huze_ASGuard##
 					AL=$(echo "${AL//./_}" | sort | uniq)
