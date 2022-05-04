@@ -36,5 +36,10 @@ dumpsys package [PackageName]| grep -s "ACCESSIBILITY_SERVICE" | sed 's/ /\n/g' 
 
 以上三处[PackageName]需要替换成查找的package name
 
+# APP
+APP是由酷安@嘟嘟ski提供的PIO框架二次创作而来，旨在于能够轻松修改ASGuard的配置，并非必需部分，可自行选择
 
-注:我是小fw，做的不太好，如果喜欢的话可以点亮小星星
+而APP也提供了简易的无障碍管理功能，无需等待例如某些系统的开启警告倒计时
+
+# 作者的自说自话
+首先呢我是一个小fw，做的并不是太好，可能还有些设备不能很好的运行，但是我真的很想把它做好，如果喜欢的话可以点亮小星星
