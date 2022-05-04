@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<group>
+	<action shell="hidden" reload="true">
+		<title>无障碍简易管理</title>
+		<desc>这里列出了一些系统菜单没有列出的无障碍选项</desc>
+		<param name="EAST" multiple="multiple" value-sh="settings get secure enabled_accessibility_services | sed 's/:/\n/g' | sed '/^$/d'" option-sh="settings get secure enabled_accessibility_services | sed 's/:/\n/g' | sed '/^$/d'">
+		</param>
+		<set>
+			EAST=$(echo ${EAST} | sed 's/ /:/g')
+			settings put secure enabled_accessibility_services &#34;${EAST}&#34;
+		</set>
+	</action>
+</group>
+<group title="">
+	<action>
+		<title>查看详细配置内容</title>
+		<set>
+			if [ -f '/data/media/0/Android/ASGuard.conf' ]; then
+				cat '/data/media/0/Android/ASGuard.conf'
+			else
+				echo '没有配置文件'
+			fi
+		</set>
+	</action>
+	<action>
+		<title>查看日志记录</title>
+		<set>
+			if [[ -f '/data/media/0/Android/log_ASG.txt' ]]; then
+				cat '/data/media/0/Android/log_ASG.txt'
+			else
+				echo '未发现log日志'
+			fi
+		</set>
+	</action>
+	<action>
+		<title>查看过滤开关</title>
+		<set>
+			source '/data/media/0/Android/ASGuard.conf'
+			if [[ -n $(echo ${exclude}) ]]; then
+				echo &#34;${exclude}&#34; | sed '/^$/d'
+			else
+				echo '未发现'
+			fi
+		</set>
+	</action>
+</group>
+<group>
+	<action>
+		<title>删除log</title>
+		<set>
+			if [[ -f '/data/media/0/Android/log_ASG.txt' ]]; then
+				rm '/data/media/0/Android/log_ASG.txt'
+				echo '已删除'
+			else
+				echo '无日志log文件'
+			fi
+		</set>
+	</action>
+</group>
+<group>
+	<action>
+		<title>APP使用手册</title>
+		<set>
+			echo -e 'Q: 点击开关没反应？\nA: 点击开关后需要等待一小会儿，模块主要进程运行之后才会显示打开，不要连续点！\n'
+		</set>
+	</action>
+</group>
+<group>
+	<page
+		title="关于"
+		desc="点击打开模块作者的酷安主页"
+		link="http://www.coolapk.com/u/919184"/>
+	<page
+		title="加入QQ群"
+		desc="Q群: 837934310"
+		link="https://jq.qq.com/?_wv=1027&#38;k=bm4DxJcM"/>
+	<page
+		title="前往Github开源项目"
+		desc="https://github.com/huzesama/ASGuard"
+		link="https://github.com/huzesama/ASGuard"/>
+	<page
+		title="蓝奏云下载"
+		desc="面具包版本: v6_Release(202205011)  密码: huze"
+		link="https://venmzvi.lanzoul.com/iCWOL0494zle"/>
+</group>
