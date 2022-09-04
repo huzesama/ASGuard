@@ -2,7 +2,7 @@
 <group>
 	<action shell="hidden" reload="true">
 		<title>无障碍简易管理</title>
-		<desc>这里列出了一些系统菜单没有列出的无障碍选项</desc>
+		<desc>这里可以显示一些系统菜单内没有列出的无障碍选项</desc>
 		<param name="EAST" multiple="multiple" value-sh="settings get secure enabled_accessibility_services | sed 's/:/\n/g' | sed '/^$/d'" option-sh="settings get secure enabled_accessibility_services | sed 's/:/\n/g' | sed '/^$/d'">
 		</param>
 		<set>
@@ -23,12 +23,12 @@
 		</set>
 	</action>
 	<action>
-		<title>查看日志记录</title>
+		<title>查看log</title>
 		<set>
 			if [[ -f '/data/media/0/Android/log_ASG.txt' ]]; then
 				cat '/data/media/0/Android/log_ASG.txt'
 			else
-				echo '未发现log日志'
+				echo '未发现log'
 			fi
 		</set>
 	</action>
@@ -52,7 +52,7 @@
 				rm '/data/media/0/Android/log_ASG.txt'
 				echo '已删除'
 			else
-				echo '无日志log文件'
+				echo '无log文件'
 			fi
 		</set>
 	</action>
@@ -61,7 +61,10 @@
 	<action>
 		<title>APP使用手册</title>
 		<set>
-			echo -e 'Q: 点击开关没反应？\nA: 点击开关后需要等待一小会儿，模块主要进程运行之后才会显示打开，不要连续点！\n'
+			echo -e 'Q: 点击开关没反应？\nA: 点击开关后需要等待一小会儿，模块主要进程运行之后才会显示打开，不要连续点！\n\n'
+			echo -e 'Q: 如何添加过滤开关列表？\nA: 先将需要过滤开关的APP添加到过滤APP列表，再选择过滤开关(过滤开关将从过滤APP列表中读取)\n\n'
+			echo -e 'Q: 无障碍简易管理如何开启无障碍功能？\nA: 不支持开启，只能从中选择关闭\n\n'
+			echo -e 'Q: 什么是Auto模式？\nA: 其实就是F模式和M模式的集成加强\n\n'
 		</set>
 	</action>
 </group>
@@ -72,14 +75,14 @@
 		link="http://www.coolapk.com/u/919184"/>
 	<page
 		title="加入QQ群"
-		desc="Q群: 837934310"
+		summary="Q群: 837934310"
 		link="https://jq.qq.com/?_wv=1027&#38;k=bm4DxJcM"/>
 	<page
 		title="前往Github开源项目"
-		desc="https://github.com/huzesama/ASGuard"
 		link="https://github.com/huzesama/ASGuard"/>
 	<page
 		title="蓝奏云下载"
-		desc="面具包版本: v6_Release(202205011)  密码: huze"
-		link="https://venmzvi.lanzoul.com/iCWOL0494zle"/>
+		desc="面具包版本: v6.1_Release(202209041)"
+		summary="密码:huze"
+		link="https://venmzvi.lanzoul.com/id6Kn0b0ne4d"/>
 </group>

@@ -6,13 +6,12 @@ LF='&#x000A;'
 amp='&#38;'
 quot='&#34;'
 
-ASGuardUIversion='1.6.4'
-ASGuardUIversionCode=202205011
-updata_text1="增加 其它 - 前往Github开源项目"
-new_version='v6'
-new_versionCode=202205011
-updata_text2="改进运行逻辑${LF}改进获取EAS方式${LF}移除EAS存储文件${LF}新增自动(Auto)模式${LF}新增APP过滤名单${LF}新增单个开关过滤名单${LF}优化已知命令${LF}修改R模式时间单位秒为分${LF}修复一些问题${LF}改进Auto模式${LF}主动过滤安卓系统设置的选项${LF}限制了日志的长度在200行${LF}修复多用户导致获取焦点APP失败的问题${LF}优化获取窗口APP函数${LF}提升AS列表内APP优先级${LF}开机清空电池优化白名单,但默认设置为不清空"
-
+ASGuardUIversion='1.6.5'
+ASGuardUIversionCode=202209041
+updata_text1="修改部分描述${LF}新增APP使用手册条目"
+new_version='v6.1'
+new_versionCode=202209041
+updata_text2="调整优化Auto模式运行逻辑${LF}修复已知bug${LF}提升AS列表内APP在Auto模式的优先级"
 if [[ -n "${MODPATH}" ]] && [[ -d "${MODPATH}" ]]; then
 	installed=1
 	uninstalled=0
@@ -52,7 +51,7 @@ cat <<EOF
 <?xml version="1.0" encoding="UTF-8" ?>
 <group>
 	<text>
-		<slice color="#FF6800">本应用为Magisk模块 无障碍服务守护(ASGuard) 的可视化配置界面，仅适配最新版模块</slice>
+		<slice color="#FF6800">本应用为Magisk模块 无障碍服务守护(ASGuard) 的可视化配置界面，仅适配对应版本的模块</slice>
 	</text>
 	<text>
 		<slice color="#FF6800">ASGuardUI ${ASGuardUIversion}(${ASGuardUIversionCode})</slice>
@@ -71,7 +70,7 @@ cat <<EOF
 	</text>
 	<resource dir="script/modulefiles"/>
 	<action reload="true">
-		<title>开始更新 [模块beta版本对应APP的更新入口将一直存在]</title>
+		<title>开始更新 [模块beta版本对应APP的更新入口将一直显示]</title>
 		<desc>无需额外下载，免重启更新，新版模块文件已内置APP</desc>
 		<set>
 			if [[ -f './script/modulefiles/service.sh' ]] ${amp}${amp} [[ -f './script/modulefiles/module.prop' ]]; then
@@ -92,7 +91,7 @@ cat <<EOF
 				echo '完成'
 				echo '移除释放的更新文件'
 			else
-				echo '更新资源文件已被移除，结束ASGuardUI以重新释放更新文件...'
+				echo '更新资源文件已被移除，结束ASGuardUI进程以重新释放更新文件...'
 			fi
 		</set>
 	</action>
@@ -138,7 +137,7 @@ cat <<EOF
 	<resource file="script/WriteConfig.sh" />
 	<action shell="hidden" reload="true">
 		<title>运行模式 [当前: ${mode}]</title>
-		<param name="mo" value-sh="source ${conf} ; echo \${mode}" required="true" title="#A(Auto): 自动管理开启相应无障碍功能无须配置AS即可使用，适用于大部分场景${LF}#M(Monitor): 监控无障碍服务的启用应用，将被关闭的无障碍服务重新开启${LF}#F(Focus): 选择该模式在开机时不会自动打开无障碍服务，直到指定的APP处于焦点窗口时若app未打开无障碍服务，则将其打开${LF}#R(Refresh): 该模式为定时刷新开启状态，适用于scene等轻度且使用无障碍功能的APP${LF}请根据实际使用情况选择模式，这样可以帮助你把更多的电量花在需要的地方">
+		<param name="mo" value-sh="source ${conf} ; echo \${mode}" required="true" title="#A(Auto): 自动管理开启相应无障碍功能，即使不配置AS也可使用，适用于大部分场景${LF}#M(Monitor): 持续监控无障碍服务的启用应用，将被关闭的无障碍服务重新开启${LF}#F(Focus): 选择该模式在开机时不会自动打开无障碍服务，直到指定的APP处于焦点窗口时若app未打开无障碍服务，则将其打开${LF}#R(Refresh): 该模式为定时刷新开启状态，适用于scene等轻度且使用无障碍功能的APP${LF}请根据实际使用情况选择模式，这样可以帮助你把更多的电量花在需要的地方">
 			<option value="A">Auto</option>
 			<option value="M">Monitor</option>
 			<option value="F">Focus</option>
@@ -153,6 +152,7 @@ cat <<EOF
 	<action shell="hidden" reload="true">
 		<title>无障碍功能受保护APP [已配置${num1}个APP]</title>
 		<desc>配置需要保护无障碍功能的APP (实时生效)</desc>
+		<summary>在Auto模式具有最高优先级</summary>
 		<param
 			name="ASpackages"
 			title="加入此项的APP不需要加入电池优化白名单APP列表"
@@ -221,7 +221,8 @@ cat <<EOF
 <group>
 	<switch shell="hidden">
 		<title>清空电池优化白名单</title>
-		<desc>开机90秒后将清空系统电池优化白名单并添加配置APP${LF}注意: 开启此功能可能会导致系统某些功能睡死，部分应用及桌面部件功能可能受影响</desc>
+		<desc>开机90秒后将清空系统电池优化白名单并添加配置APP</desc>
+		<summary>注意: 开启此功能可能会导致系统某些功能睡死，部分应用及桌面部件功能可能受影响</summary>
 		<get>
 			source ${conf}
 			echo \${WhitelistCleaner}
@@ -231,7 +232,7 @@ cat <<EOF
 		</set>
 	</switch>
 	<switch shell="hidden">
-		<title>日志Log</title>
+		<title>抓取Log</title>
 		<desc>一般用于检查模块流程的问题</desc>
 		<get>
 			source ${conf}
