@@ -14,8 +14,9 @@ for var in $(echo ${AS}); do
 done
 EAST="$(read_EAST)"
 if_config_change() {
-	if [[ "$(ls -l "${CONFIG%/*}/" | grep "${CONFIG##*/}")" != "${LastConf}" ]]; then
+	if [[ "$(ls -l "${CONFIG%/*}/" | fgrep "${CONFIG##*/}")" != "${LastConf}" ]]; then
 		load_config
+		EAS="$(getService "${AS:-}")"
 		LastConf="$(ls -l "${CONFIG%/*}/" | grep "${CONFIG##*/}")"
 		change_prop "更新配置时间:$(get_time)" "运行模式: A 排除应用个数:$(echo "${exAS:-}" | sed '/^$/d' | wc -l)"
 		mylog "配置文件已被修改." "ASGuard.conf"
@@ -32,13 +33,13 @@ exEAS() {
 }
 while true; do
 	if [[ ! -f "${DIR}/disable" ]]; then
-		if [[ ${switch} = 0 ]]; then
+		if [[ ${switch} == 0 ]]; then
 			change_prop "重新运行"
 			switch=1
 			nohup sh "${DIR}/service.sh" &
 			exit 0
 		fi
-		while [[ $(getUnlockState) = true ]] && [[ ${mode} = 'A' ]]; do
+		while [[ $(getUnlockState) == true ]] && [[ ${mode} == 'A' ]]; do
 			[[ -f "${DIR}/disable" ]] && break
 			n=$(( n + 1 ))
 			old_EAST="${EAST}"
@@ -48,66 +49,30 @@ while true; do
 			CFA="$(getCurrentFocusAPP)"
 			##排除指定APP##
 			[[ -n $(echo "${exAS}" | fgrep -w "${CFA}") ]] && CFA=""
-			##焦点窗口为主页面时弱预测及监测##
-			if [[ -n $(echo ${CFA} | grep home) ]]; then
-				if [[ "${EAST}" != "${old_EAST}" ]]; then
-					sameEAST=$(take_same "${EAST}" "${old_EAST}")
-					decreaseEAST=$(get_difference "${old_EAST}" "${sameEAST}")
-				fi
-				##AS列表内的APP如果进程存在则开启无障碍
-				for var in $(echo ${AS}); do
-					if [[ $(getProcessState ${var}) != "false" ]]; then
-						write_EAST "$(getService "${var}")"
-						mylog "为进程开启无障碍服务." "${var}"
-					fi
-				done
-				for var in $(echo ${AL}); do
-					Td="$(getProcessState ${var//_/.} t)"
-					if [[ $(eval "echo ${var}_Td") != ${Td} ]] || [[ -n $(echo "${decreaseEAST}" | fgrep "${var//_/.}/") ]]; then
-						if [[ ${Td} != false ]]; then
-							write_EAST "$(getService "${var//_/.}")"
-							mylog "检测开启无障碍服务." "${var//_/.}"
-						fi
-						eval "${var}_Td=${Td}"
-					##最近五分钟启动频率是否大于最近十分钟的前五分钟启动频率##
-					elif [[ $(eval "(( ${var}_Fre10 - ${var}_Fre5 ))") < $(eval "echo \${${var}_Fre5}") ]]; then
-						write_EAST "$(getService "${var//_/.}")"
-						mylog "开启常用应用无障碍开关." "${var//_/.}"
-					fi
-				done
-				if [[ m -gt 2 ]]; then
-					for var in $(echo ${AL}); do
-						if [[ $(eval "echo ${var}_Fre5") = 0 ]]; then
-							##去除长时间未打开的APP名单##
-							AL=$(echo "${AL}" | fgrep -vw "${var}")
-							eval "unset ${var}_Fre10"
-							eval "unset ${var}_Fre5"
-							mylog "从AL名单中移除." "${CFA}"
-						else
-							eval "${var}_Fre10=${var}_Fre5"
-						fi
-
-					done
-					m=0
-				fi
-				if [[ n -gt 75 ]]; then
-					for var in $(echo ${AL}); do
-						eval "${var}_Fre5=0"
-					done
-					n=0
-					m=$(( m + 1 ))
-				fi
-				continue
+			if [[ "${EAST}" != "${old_EAST}" ]]; then
+				sameEAST=$(take_same "${EAST}" "${old_EAST}")
+				decreaseEAST=$(get_difference "${old_EAST}" "${sameEAST}")
 			fi
+			for var in $(echo $(echo -e "${AL}\n${AS//./_}" | sort | uniq)); do
+				Td="$(getProcessState ${var//_/.} t)"
+				if [[ -n $(echo "${AS}" | fgrep "${var//_/.}") ]]; then
+					write_EAST "$(echo "${EAS:-}" | fgrep "${var//_/.}")"
+					mylog "开启优先级应用无障碍开关." "${var//_/.}"
+				elif [[ $(eval "echo \${${var}_Td}") != ${Td} ]] || [[ -n $(echo "${decreaseEAST}" | fgrep "${var//_/.}/") ]]; then
+					if [[ ${Td} != false ]]; then
+						write_EAST "$(getService "${var//_/.}")"
+						mylog "为进程开启无障碍服务." "${var//_/.}"
+					fi
+					eval "${var}_Td=${Td}"
+				fi
+			done
 			willWrite="$(getService "${CFA}")"
 			willWrite="$(exEAS "${willWrite}")"
 			if [[ -n ${willWrite} ]]; then
-				write_EAST "${willWrite}"
-				if [[ ${old_CFA} != "${CFA}" ]]; then
-					mylog "应用获得焦点." "${CFA}"
-					old_CFA="${CFA}"
-				fi
-				if [[ -z $(echo "${AS}" | fgrep "${CFA}") ]] && [[ -z $(echo "${AL}" | fgrep "${CFA//./_}") ]]; then
+				mylog "无障碍功能应用获得焦点." "${CFA}"
+				if [[ -z $(echo "${AL}" | fgrep "${CFA//./_}") ]]; then
+					write_EAST "${willWrite}"
+					mylog "已开启无障碍功能." "${CFA}"
 					mylog "已加入AL名单." "${CFA}"
 					AL="${AL:-}${AL:+\n}${CFA}"
 					##替换包名如com.huze.ASGuard替换为com_huze_ASGuard##
@@ -115,8 +80,32 @@ while true; do
 					eval "${CFA//./_}_Td=$(getProcessState ${CFA} t)"
 					eval "${CFA//./_}_Fre5=\$(( \${${CFA//./_}_Fre5:-0} + 1 ))"
 					eval "${CFA//./_}_Fre10=\$(( \${${CFA//./_}_Fre10:-0} + 1 ))"
+				##最近大约五分钟使用频率是否大于最近大约十分钟的前五分钟使用频率##
+				elif [[ $(eval "(( ${var}_Fre10 - ${var}_Fre5 ))") < $(eval "echo \${${var}_Fre5}") ]]; then
+					write_EAST "$(getService "${var//_/.}")"
+					mylog "开启常用应用无障碍开关." "${var//_/.}"
 				fi
 				willWrite=""
+			fi
+			if [[ ${m} -gt 1 ]]; then
+				for var in $(echo ${AL}); do
+					if [[ $(eval "echo \${${var}_Fre5}") == 0 ]]; then
+						##去除长时间未打开的APP名单##
+						AL=$(echo "${AL}" | fgrep -vw "${var}")
+						eval "unset ${var}_Fre10 ${var}_Fre5 ${var}_Td"
+						mylog "从AL名单中移除." "${var//_/.}"
+					else
+						eval "${var}_Fre10=${var}_Fre5"
+					fi
+					done
+				m=0
+			fi
+			if [[ ${n} -gt 75 ]]; then
+				for var in $(echo ${AL}); do
+					eval "${var}_Fre5=0"
+				done
+				n=0
+				m=$(( m + 1 ))
 			fi
 			if_config_change
 		done

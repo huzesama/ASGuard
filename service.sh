@@ -5,8 +5,8 @@ done
 ##设置环境变量##
 export DIR="${0%/*}"
 export PATH="${DIR}/busybox/bin:${PATH}"
-export version='v6'
-export versionCode='202205041'
+export version='v6.1'
+export versionCode='202209041'
 export inform="ASGuard ${version}(${versionCode}) created by 沍澤"
 export CONFIG="/data/media/0/Android/ASGuard.conf"
 export LOG_PATH="/data/media/0/Android/log_ASG.txt"
@@ -46,7 +46,7 @@ done
 mylog "${exclude}" "过滤开关"
 
 ##判断是否清空已开启的无障碍##
-if [[ ${clean} = 1 ]]; then
+if [[ ${clean} == 1 ]]; then
 	write_EAST -c
 fi
 
@@ -66,7 +66,7 @@ cp -f "${file}" "${DIR}/ASGuard_Process.sh"
 chmod 111 "${DIR}/ASGuard_Process.sh"
 chown 'root:root' "${DIR}/ASGuard_Process.sh"
 settings put secure accessibility_enabled 1
-while [[ "$(ps -ef | grep 'ASGuard_Process' | grep -v grep | wc -l)" = "0" ]]; do
+while [[ "$(ps -ef | grep 'ASGuard_Process' | grep -v grep | wc -l)" == "0" ]]; do
 	nohup sh "${DIR}/ASGuard_Process.sh" &
 	sleep 2
 done

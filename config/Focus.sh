@@ -8,7 +8,7 @@ mylog "正在运行..." "F"
 ST=4
 switch=1
 if_config_change() {
-	if [[ "$(ls -l "${CONFIG%/*}/" | grep "${CONFIG##*/}")" != "${LastConf}" ]]; then
+	if [[ "$(ls -l "${CONFIG%/*}/" | fgrep "${CONFIG##*/}")" != "${LastConf}" ]]; then
 		load_config
 		LastConf=$(ls -l "${CONFIG%/*}/" | grep "${CONFIG##*/}")
 		if [[ "${AS}" != "${old_AS}" ]]; then
